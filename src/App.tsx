@@ -1567,7 +1567,7 @@ export default function App() {
       <aside className={`fixed left-0 top-0 bottom-0 w-72 glass-panel flex flex-col p-8 z-50 transition-all duration-300 transform lg:translate-x-0 ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:flex border-r border-[var(--glass-border-color)]`}>
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <motion.div 
               animate={aiLoading ? { scale: [1, 1.1, 1], opacity: [1, 0.7, 1] } : {}}
@@ -1663,7 +1663,7 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <motion.main className="lg:pl-72 p-4 md:p-8 lg:p-10 transition-all duration-300">
+      <motion.main className="lg:ml-72 p-4 md:p-8 lg:p-10 transition-all duration-300">
         {/* Notifications */}
         <AnimatePresence>
           {notification && (
@@ -1693,18 +1693,18 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden p-3 bg-[var(--glass-background)] border border-[var(--glass-border-color)] rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95"
+              className="lg:hidden p-2.5 bg-[var(--glass-background)] border border-[var(--glass-border-color)] rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95"
             >
               <Layers className="w-5 h-5" />
             </button>
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] tracking-tight capitalize">{activeTab}</h2>
-              <div className="hidden sm:flex items-center gap-4 mt-1">
-                <p className="text-sm text-[var(--text-secondary)] font-medium tracking-tight">System-wide intelligence and predictive analytics.</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] tracking-tight capitalize mb-1">{activeTab}</h2>
+              <div className="flex items-center gap-4">
+                <p className="hidden sm:block text-sm text-[var(--text-secondary)] font-medium tracking-tight">System-wide intelligence and predictive analytics.</p>
                 <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                   <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Neural Link: Optimal</span>
