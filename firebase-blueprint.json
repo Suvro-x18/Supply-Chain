@@ -1,0 +1,135 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A product in the supply chain inventory.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "sku": { "type": "string" },
+        "stockLevel": { "type": "number" },
+        "minThreshold": { "type": "number" },
+        "maxThreshold": { "type": "number" },
+        "price": { "type": "number" },
+        "cost": { "type": "number" },
+        "leadTime": { "type": "number", "description": "Lead time in days" },
+        "supplierId": { "type": "string" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "sku", "stockLevel", "minThreshold", "maxThreshold"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Supplier information.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "rating": { "type": "number" },
+        "contact": { "type": "string" },
+        "address": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" }
+      },
+      "required": ["name"]
+    },
+    "Alert": {
+      "title": "Alert",
+      "description": "System generated alerts for inventory risks.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["stockout", "overstock", "delay", "spike", "lowstock", "prediction"] },
+        "message": { "type": "string" },
+        "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "isRead": { "type": "boolean" },
+        "productId": { "type": "string" },
+        "supplierId": { "type": "string" },
+        "isResolved": { "type": "boolean" },
+        "predictedDays": { "type": "number" }
+      },
+      "required": ["type", "message", "severity", "timestamp", "isRead"]
+    },
+    "SalesData": {
+      "title": "Sales Data",
+      "description": "Historical sales data for demand forecasting.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "quantity": { "type": "number" },
+        "revenue": { "type": "number" }
+      },
+      "required": ["productId", "date", "quantity"]
+    },
+    "MarketInsight": {
+      "title": "Market Insight",
+      "description": "AI-generated market analysis and trends.",
+      "type": "object",
+      "properties": {
+        "topic": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "type": { "type": "string", "enum": ["trend", "deal", "combo", "prediction"] }
+      },
+      "required": ["topic", "content", "timestamp", "type"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A replenishment order sent to a supplier.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "supplierId": { "type": "string" },
+        "supplierName": { "type": "string" },
+        "items": { 
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "productName": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" }
+            }
+          }
+        },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "shipped", "received", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "expectedDelivery": { "type": "string", "format": "date-time" }
+      },
+      "required": ["supplierId", "items", "totalAmount", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of products and their inventory status."
+    },
+    "/suppliers/{supplierId}": {
+      "schema": "Supplier",
+      "description": "Collection of suppliers."
+    },
+    "/alerts/{alertId}": {
+      "schema": "Alert",
+      "description": "Collection of system alerts."
+    },
+    "/sales/{saleId}": {
+      "schema": "SalesData",
+      "description": "Collection of historical sales records."
+    },
+    "/insights/{insightId}": {
+      "schema": "MarketInsight",
+      "description": "Collection of AI-generated insights and offers."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of procurement orders."
+    }
+  }
+}

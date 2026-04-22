@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-primary: var(--accent-color);
+  --color-primary-hover: var(--accent-color-hover);
+}
+
+@layer base {
+  :root {
+    --bg-main: #e3d9ff; /* Mild Lavender */
+    --text-primary: #2e1065; /* Deep Violet Blackish */
+    --text-secondary: #6d28d9; /* Moderate Purple */
+    --glass-background: rgba(255, 255, 255, 0.5);
+    --glass-border-color: rgba(139, 92, 246, 0.2);
+    --glass-shadow-color: rgba(139, 92, 246, 0.08);
+    --panel-bg: #f5f2ff;
+    --grid-color: rgba(139, 92, 246, 0.06);
+    --accent-color: #8b5cf6; /* Lavender Accent */
+    --accent-color-hover: #7c3aed;
+  }
+
+  .light-theme {
+    /* Same as root for this playful 'light-only' focus, or even lighter */
+    --bg-main: #ffffff;
+    --text-primary: #1e1b4b;
+    --text-secondary: #6366f1;
+    --glass-background: rgba(255, 255, 255, 0.9);
+    --glass-border-color: rgba(99, 102, 241, 0.1);
+    --glass-shadow-color: rgba(99, 102, 241, 0.05);
+    --panel-bg: #fdfcff;
+    --grid-color: rgba(99, 102, 241, 0.03);
+    --accent-color: #a78bfa;
+    --accent-color-hover: #8b5cf6;
+  }
+
+  .light-theme .text-white,
+  .light-theme .text-gray-100 {
+    @apply text-[#4c1d95];
+  }
+
+  .light-theme .text-gray-300,
+  .light-theme .text-gray-400 {
+    @apply text-[#6d28d9];
+  }
+
+  .light-theme .text-gray-500 {
+    @apply text-[#7c3aed];
+  }
+
+  .light-theme .hover\:text-gray-200:hover {
+    @apply text-[#4c1d95];
+  }
+
+  .light-theme .hover\:text-white:hover {
+    @apply text-[#5b21b6];
+  }
+
+  .light-theme .border-white\/\[0\.05\] {
+    @apply border-[#8b5cf6]/[0.1];
+  }
+
+  .light-theme .border-white\/\[0\.08\] {
+    @apply border-[#8b5cf6]/[0.15];
+  }
+
+  .light-theme .bg-white\/\[0\.04\] {
+    @apply bg-[#8b5cf6]/[0.05];
+  }
+
+  .light-theme .bg-white\/\[0\.08\] {
+    @apply bg-[#8b5cf6]/[0.1];
+  }
+
+  .light-theme .bg-white\/\[0\.03\] {
+    @apply bg-[#f5f3ff];
+  }
+
+  .light-theme .bg-black\/20 {
+    @apply bg-white/60;
+  }
+
+  .light-theme .divide-white\/\[0\.03\] > :not([hidden]) ~ :not([hidden]) {
+    @apply divide-[#8b5cf6]/[0.05];
+  }
+
+  .light-theme .focus\:border-blue-500\/50:focus {
+    @apply border-[#8b5cf6]/50 active:ring-4 active:ring-[#8b5cf6]/5;
+  }
+
+  .light-theme header h2 {
+    @apply text-[#4c1d95];
+  }
+
+  .light-theme .text-blue-500 {
+    @apply text-[#8b5cf6];
+  }
+
+  .light-theme .bg-blue-600 {
+    @apply bg-[#8b5cf6] hover:bg-[#7c3aed];
+  }
+
+  .light-theme .shadow-blue-600\/20 {
+    @apply shadow-md shadow-violet-200;
+  }
+
+  .light-theme .shadow-blue-500\/20 {
+    @apply shadow-sm shadow-violet-100;
+  }
+
+  .light-theme .from-blue-500 {
+    @apply from-[#8b5cf6];
+  }
+
+  .light-theme .to-amber-900 {
+    @apply to-[#c084fc];
+  }
+
+  body {
+    background-color: var(--bg-main);
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 60%),
+      url("https://www.transparenttextures.com/patterns/snow.png");
+    color: var(--text-primary);
+    @apply antialiased selection:bg-[#8b5cf6]/30 transition-colors duration-500 font-sans;
+  }
+
+  .light-theme body {
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.1) 0%, transparent 60%),
+      url("https://www.transparenttextures.com/patterns/snow.png");
+  }
+}
+
+@layer components {
+  .glass-card {
+    background-color: var(--glass-background);
+    border: 1px solid var(--glass-border-color);
+    @apply rounded-[24px] relative overflow-hidden;
+    box-shadow: 0 4px 20px 0 var(--glass-shadow-color);
+  }
+
+  .glass-card-hover {
+    @apply transition-all duration-500 hover:bg-[var(--text-primary)]/[0.02] hover:border-[var(--text-primary)]/[0.1] hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .glass-panel {
+    background-color: var(--panel-bg);
+    border-right: 1px solid var(--glass-border-color);
+    @apply transition-colors duration-500;
+  }
+
+  .glass-button {
+    @apply bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.1] transition-all duration-300 active:scale-95 relative overflow-hidden;
+  }
+
+  .light-theme .glass-button {
+    @apply bg-[#8b5cf6]/[0.05] hover:bg-[#8b5cf6]/[0.1] border-[#8b5cf6]/[0.1] text-[#2e1065];
+  }
+
+  .technical-grid {
+    background-image: radial-gradient(circle at 1px 1px, var(--grid-color) 1px, transparent 0);
+    background-size: 32px 32px;
+  }
+
+  .noise-bg {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+}
+
+.light-theme .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 163, 115, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 163, 115, 0.4);
+}
+
+/* Map Theming */
+.leaflet-container {
+  background: var(--bg-main) !important;
+  border-radius: 20px;
+  z-index: 10;
+}
+
+.dark-map .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) grayscale(50%);
+}
+
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+  background-color: var(--panel-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--glass-border-color) !important;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background-color: var(--panel-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--glass-border-color) !important;
+}

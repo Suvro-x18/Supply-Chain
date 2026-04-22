@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+ 
+    function isAdmin() {
+      return isAuthenticated() && 
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+         (request.auth.token.email == "suvrok018@gmail.com"));
+    }
+ 
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 200 &&
+             data.sku is string && data.sku.size() > 0 &&
+             data.stockLevel is number &&
+             data.minThreshold is number &&
+             data.maxThreshold is number;
+    }
+ 
+    function isValidSale(data) {
+      return data.productId is string &&
+             data.date is timestamp &&
+             data.quantity is number && data.quantity > 0;
+    }
+ 
+    function isValidInsight(data) {
+      return data.topic is string && data.topic.size() < 500 &&
+             data.content is string && data.content.size() < 5000 &&
+             data.timestamp is timestamp &&
+             data.type in ['trend', 'deal', 'combo', 'prediction'];
+    }
+
+    function isValidOrder(data) {
+      return data.supplierId is string &&
+             data.items is list &&
+             data.totalAmount is number &&
+             data.status in ['pending', 'confirmed', 'shipped', 'received', 'cancelled'] &&
+             data.createdAt is timestamp;
+    }
+ 
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+ 
+    match /products/{productId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin() && isValidProduct(request.resource.data);
+      allow delete: if isAdmin();
+    }
+ 
+    match /suppliers/{supplierId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+ 
+    match /alerts/{alertId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+      allow update: if isAuthenticated() && (isAdmin() || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead', 'isResolved']));
+    }
+ 
+    match /sales/{saleId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() && isValidSale(request.resource.data);
+    }
+ 
+    match /insights/{insightId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() && isValidInsight(request.resource.data);
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() && isValidOrder(request.resource.data);
+      allow update: if isAuthenticated() && (isAdmin() || isValidOrder(request.resource.data));
+      allow delete: if isAdmin();
+    }
+  }
+}
