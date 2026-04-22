@@ -214,6 +214,7 @@ export default function App() {
   const [supplierFilters, setSupplierFilters] = useState<{ rating: number | null, status: string | null }>({ rating: null, status: null });
   const [simulationParams, setSimulationParams] = useState({ demandIncrease: 0, leadTimeDelay: 0 });
   const [importErrors, setImportErrors] = useState<{ row: number, column?: string, reason: string }[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Clear notification after 5s
@@ -1549,57 +1550,80 @@ export default function App() {
         ) : null}
       </div>
 
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-64 glass-panel hidden lg:flex flex-col p-8 z-50">
-        <div className="flex items-center gap-3 mb-12">
+      {/* Mobile Drawer Overlay */}
+      <AnimatePresence>
+        {isSidebarOpen && (
           <motion.div 
-            animate={aiLoading ? { scale: [1, 1.1, 1], opacity: [1, 0.7, 1] } : {}}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="w-10 h-10 bg-gradient-to-br from-primary to-[#d8b4fe] rounded-xl flex items-center justify-center shadow-lg shadow-primary/20"
-          >
-            <BrainCircuit className="w-6 h-6 text-white" />
-          </motion.div>
-          <div>
-            <h1 className="text-lg font-bold text-[var(--text-primary)] tracking-tight leading-none">SC Intel</h1>
-            <p className="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Enterprise</p>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[45] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar / Mobile Drawer */}
+      <aside className={`fixed left-0 top-0 bottom-0 w-72 glass-panel flex flex-col p-8 z-50 transition-all duration-300 transform lg:translate-x-0 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:flex border-r border-[var(--glass-border-color)]`}>
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-3">
+            <motion.div 
+              animate={aiLoading ? { scale: [1, 1.1, 1], opacity: [1, 0.7, 1] } : {}}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="w-10 h-10 bg-gradient-to-br from-primary to-[#d8b4fe] rounded-xl flex items-center justify-center shadow-lg shadow-primary/20"
+            >
+              <BrainCircuit className="w-6 h-6 text-white" />
+            </motion.div>
+            <div>
+              <h1 className="text-lg font-bold text-[var(--text-primary)] tracking-tight leading-none">SC Intel</h1>
+              <p className="text-[10px] font-bold text-primary uppercase tracking-widest mt-1">Enterprise</p>
+            </div>
           </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden p-2 hover:bg-[var(--text-primary)]/10 rounded-xl transition-colors"
+          >
+            <X className="w-5 h-5 text-[var(--text-secondary)]" />
+          </button>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
           <NavItem 
             active={activeTab === 'dashboard'} 
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => { setActiveTab('dashboard'); setIsSidebarOpen(false); }}
             icon={<LayoutDashboard className="w-5 h-5" />}
             label="Dashboard"
           />
           <NavItem 
             active={activeTab === 'inventory'} 
-            onClick={() => setActiveTab('inventory')}
+            onClick={() => { setActiveTab('inventory'); setIsSidebarOpen(false); }}
             icon={<Package className="w-5 h-5" />}
             label="Inventory"
           />
           <NavItem 
             active={activeTab === 'insights'} 
-            onClick={() => setActiveTab('insights')}
+            onClick={() => { setActiveTab('insights'); setIsSidebarOpen(false); }}
             icon={<BrainCircuit className="w-5 h-5" />}
             label="Insights"
           />
           <NavItem 
             active={activeTab === 'suppliers'} 
-            onClick={() => setActiveTab('suppliers')}
+            onClick={() => { setActiveTab('suppliers'); setIsSidebarOpen(false); }}
             icon={<Truck className="w-5 h-5" />}
             label="Suppliers"
           />
           <NavItem 
             active={activeTab === 'alerts'} 
-            onClick={() => setActiveTab('alerts')}
+            onClick={() => { setActiveTab('alerts'); setIsSidebarOpen(false); }}
             icon={<AlertTriangle className="w-5 h-5" />}
             label="Alerts"
             badge={alerts.filter(a => !a.isRead).length}
           />
           <NavItem 
             active={activeTab === 'procurement'} 
-            onClick={() => setActiveTab('procurement')}
+            onClick={() => { setActiveTab('procurement'); setIsSidebarOpen(false); }}
             icon={<FileText className="w-5 h-5" />}
             label="Procurement"
             badge={orders.filter(o => ['pending', 'confirmed', 'shipped'].includes(o.status)).length}
@@ -1639,7 +1663,7 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <motion.main className="lg:ml-64 p-4 lg:p-10">
+      <motion.main className="lg:pl-72 p-4 md:p-8 lg:p-10 transition-all duration-300">
         {/* Notifications */}
         <AnimatePresence>
           {notification && (
@@ -1669,11 +1693,17 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-          <div className="flex items-center gap-6">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-3 bg-[var(--glass-background)] border border-[var(--glass-border-color)] rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95"
+            >
+              <Layers className="w-5 h-5" />
+            </button>
             <div>
-              <h2 className="text-4xl font-bold text-[var(--text-primary)] tracking-tight capitalize mb-2">{activeTab}</h2>
-              <div className="flex items-center gap-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] tracking-tight capitalize">{activeTab}</h2>
+              <div className="hidden sm:flex items-center gap-4 mt-1">
                 <p className="text-sm text-[var(--text-secondary)] font-medium tracking-tight">System-wide intelligence and predictive analytics.</p>
                 <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
@@ -1682,8 +1712,8 @@ export default function App() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative group">
+          <div className="flex items-center flex-wrap gap-4 justify-end">
+            <div className="relative group w-full md:w-auto">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)] opacity-60 group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300" />
               <input 
                 type="text" 
@@ -1694,7 +1724,7 @@ export default function App() {
               />
             </div>
             {activeTab === 'inventory' && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center flex-wrap gap-3 justify-end">
                 <input 
                   type="file" 
                   ref={fileInputRef} 
